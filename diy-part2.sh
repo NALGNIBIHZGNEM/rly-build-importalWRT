@@ -37,7 +37,7 @@ git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 chmod -R a+x $GITHUB_WORKSPACE/preset-clash-core.sh
 $GITHUB_WORKSPACE/preset-clash-core.sh
 
-echo "
+# echo "
 # mosdns
 #CONFIG_PACKAGE_luci-app-mosdns=y
 
@@ -53,10 +53,10 @@ echo "
 # 易有云
 #CONFIG_PACKAGE_luci-app-linkease=y
 
-" >> .config
+# " >> .config
 
 # 修改默认IP
-sed -i 's/192.168.1.1/192.168.0.2/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.66.253/g' package/base-files/files/bin/config_generate
 
 # 修改默认主题
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
