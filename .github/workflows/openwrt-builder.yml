@@ -11,6 +11,10 @@ on:
   schedule:
    - cron: 0 1 1/7 * *
 
+permissions:
+  contents: write
+  actions: write
+
 env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
   REPO_BRANCH: openwrt-24.10
@@ -22,7 +26,6 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   build:
@@ -112,7 +115,7 @@ jobs:
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
 
     - name: 下载软件包
       id: package
@@ -193,19 +196,18 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
-#    - name: TG推送
-#      run: curl "https://api2.pushdeer.com/message/push?pushkey=${{ secrets.PUSHDEER_TOKEN }}&text=【Github Actions】AutoBuild-immortalwrt-x86 打包成功"
-
     - name: 删除运行记录
       uses: Mattraks/delete-workflow-runs@main
       with:
         retain_days: 1
         keep_minimum_runs: 1
-        token: ${{ env.GITHUB_TOKEN }}
+        token: ${{ github.token }}
 
     - name: 删除自动发布的旧固件
       uses: dev-drprasad/delete-older-releases@master
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
       with:
         keep_latest: 4
         delete_tags: true
